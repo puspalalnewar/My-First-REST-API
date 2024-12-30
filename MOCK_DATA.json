@@ -3998,5 +3998,29 @@
         "email": "ddulantydv@unicef.org",
         "gender": "Male",
         "job_title": "Financial Analyst"
+    },
+    {
+        "first_name": "Puspalal",
+        "last_name": "Newar",
+        "email": "npuspalal@gmail.com",
+        "gender": "Male",
+        "job_title": "Student",
+        "id": 501
+    },
+    {
+        "first_name": "Ghanashyam",
+        "last_name": "Newar",
+        "email": "ghanashyam@gmail.com",
+        "gender": "Male",
+        "job_title": "Student",
+        "id": 502
+    },
+    {
+        "first_name": "Chiranjivi",
+        "last_name": "Bhattarai",
+        "email": "chiranjivi@gmail.com",
+        "gender": "Male",
+        "job_title": "Student",
+        "id": 503
     }
 ]
