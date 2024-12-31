@@ -8,3 +8,14 @@ GET : /api/users/50
 1735614175841 : GET : /api/users/50
 1735614187932 : GET : /api/users/5
 1735614312128 : ::1 : GET : /api/users/5
+1735657463811 : ::1 : POST : /api/users/details
+1735657525698 : ::1 : POST : /api/users/details
+1735657689691 : ::1 : POST : /api/users/details
+1735657696471 : ::1 : POST : /api/users/details
+1735657704925 : ::1 : POST : /api/users/details
+1735657710270 : ::1 : POST : /api/users/details
+1735658160910 : ::1 : GET : /api/users/20000
+1735658206344 : ::1 : POST : /api/users/details
+1735658349502 : ::1 : GET : /api/users/20000
+1735658372669 : ::1 : GET : /api/users/20
+1735658383104 : ::1 : GET : /api/users/501

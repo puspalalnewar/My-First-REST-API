@@ -54,7 +54,8 @@ app.get('/api/users', (req, res) => {
 app.route("/api/users/:id")
     .get((req, res) => {
         const id = Number(req.params.id);
-        const user = users.find((user) => user.id === id)
+        const user = users.find((user) => user.id === id);
+        if(!user) return res.status(400).json({error : "User not found"});
         return res.json(user);
     })
     .patch((req, res) => {
@@ -74,9 +75,12 @@ app.route("/api/users/:id")
 
 app.post('/api/users/details', (req, res) => {
     const body = req.body;
+    if(!body || !body.first_name || !body.last_name){
+        return res.status(400).json({status : "Bad Request!!"});
+    }
     users.push({ ...body, id: users.length + 1 });
     fs.writeFile("./MOCK_DATA.json", JSON.stringify(users), (err, data) => {
-        return res.json({ status: "Pending", user_id: users.length });
+        return res.status(200).json({ status: "Pending", user_id: users.length });
     })
     // console.log("Body", body);
 
