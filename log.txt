@@ -1,0 +1,10 @@
+/api/users
+/api/users
+/api/users/details
+/api/users/details
+/api/users/501
+GET : /api/users/501
+GET : /api/users/50
+1735614175841 : GET : /api/users/50
+1735614187932 : GET : /api/users/5
+1735614312128 : ::1 : GET : /api/users/5

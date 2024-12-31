@@ -6,7 +6,28 @@ const fs = require('fs');
 const PORT = 8000;
 
 // Middleware
-app.use(express.urlencoded({extended : false}));
+app.use(express.urlencoded({ extended: false }));
+
+app.use((req, res, next) => {
+    fs.appendFile("log.txt", `${Date.now()} : ${req.ip} : ${req.method} : ${req.path}\n`,
+        (err, data) => {
+            next();
+        });
+})
+
+// Learning Middleware
+// app.use((req, res, next)=>{
+//     console.log("Hello, from middware 1");
+//     req.userName = "Puspalal Newar";
+//     next();
+// })
+// app.use((req, res, next)=>{
+//     console.log("Hello, from middware 2", req.userName);
+//     // next();
+//     // return res.send("hey");
+//     next();
+// })
+
 
 // Routes
 app.get('/users', (req, res) => {
@@ -50,12 +71,12 @@ app.route("/api/users/:id")
 
 app.post('/api/users/details', (req, res) => {
     const body = req.body;
-    users.push({...body, id: users.length+1});
-    fs.writeFile("./MOCK_DATA.json", JSON.stringify(users), (err, data)=>{
-        return res.json({ status: "Pending", user_id : users.length });
+    users.push({ ...body, id: users.length + 1 });
+    fs.writeFile("./MOCK_DATA.json", JSON.stringify(users), (err, data) => {
+        return res.json({ status: "Pending", user_id: users.length });
     })
     // console.log("Body", body);
-    
+
 })
 
 app.listen(PORT, () => {
