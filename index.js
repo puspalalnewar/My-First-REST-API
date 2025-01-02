@@ -1,13 +1,44 @@
 const express = require("express");
 const app = express();
-const users = require("./MOCK_DATA.json");
+const mongoose = require("mongoose");
+// const users = require("./MOCK_DATA.json");
 const fs = require('fs');
 
 const PORT = 8000;
 
+// Mongo Connect
+mongoose.connect('mongodb://127.0.0.1:27017/youtube-app-1')
+    .then(() => console.log("MongoDB connected!!"))
+    .catch((err) => console.log("Mongo Error", console.log(err)))
+
+// Schema
+const userSchema = new mongoose.Schema({
+    firstName: {
+        type: String,
+        required: true,
+    },
+    lastName: {
+        type: String,
+    },
+    email: {
+        type: String,
+        required: true,
+        unique: true
+    },
+    jobTitle: {
+        type: String,
+    },
+    gender: {
+        type: String
+    }
+},{timestamps : true}
+);
+
+// Model
+const User = mongoose.model("user", userSchema);
+
 // Middleware
 app.use(express.urlencoded({ extended: false }));
-
 app.use(
     (req, res, next) => {
         fs.appendFile("log.txt",
@@ -16,9 +47,11 @@ app.use(
                 next();
             }
         );
-    })
+    }
+)
 
 // Learning Middleware
+
 // app.use((req, res, next)=>{
 //     console.log("Hello, from middware 1");
 //     req.userName = "Puspalal Newar";
@@ -33,11 +66,13 @@ app.use(
 
 
 // Routes
-app.get('/users', (req, res) => {
+app.get('/users',async (req, res) => {
+    const allDbUsers = await User.find({});
     let html = `
         <ul>
-        ${users.map((user) => `<li>
-            ${user.first_name}
+        ${allDbUsers.map((user) => `<li>
+            Name : ${user.firstName} -> 
+            Email : ${user.email}
         </li>`).join("")}
         </ul>
     `
@@ -47,24 +82,27 @@ app.get('/users', (req, res) => {
 // REST API
 
 
-app.get('/api/users', (req, res) => {
-    return res.json(users);
+app.get('/api/users',async (req, res) => {
+    const allDbUsers = await User.find({});
+    return res.json(allDbUsers);
 })
 
 app.route("/api/users/:id")
-    .get((req, res) => {
-        const id = Number(req.params.id);
-        const user = users.find((user) => user.id === id);
-        if(!user) return res.status(400).json({error : "User not found"});
+    .get(async (req, res) => {
+        const user =await User.findById(req.params.id);
+        // const user = users.find((user) => user.id === id);
+        if (!user) return res.status(400).json({ error: "User not found" });
         return res.json(user);
     })
-    .patch((req, res) => {
+    .patch(async (req, res) => {
         // Edit user with id
-        return res.json({ status: "pending" })
+        await User.findByIdAndUpdate(req.params.id, {lastName : "Changed"});
+        return res.json({ status: "success"});
     })
-    .delete((req, res) => {
+    .delete(async (req, res) => {
         // Delete user with id
-        return res.json({ status: "Pending" })
+        await User.findByIdAndDelete(req.params.id);
+        return res.json({ status: "Success" })
     })
 
 // app.get("/api/users/:id", (req, res)=>{
@@ -73,15 +111,27 @@ app.route("/api/users/:id")
 //     return res.json(user);
 // })
 
-app.post('/api/users/details', (req, res) => {
+app.post('/api/users/details', async (req, res) => {
     const body = req.body;
-    if(!body || !body.first_name || !body.last_name){
-        return res.status(400).json({status : "Bad Request!!"});
+    if (!body || !body.first_name || !body.last_name) {
+        return res.status(400).json({ status: "Bad Request!!" });
     }
-    users.push({ ...body, id: users.length + 1 });
-    fs.writeFile("./MOCK_DATA.json", JSON.stringify(users), (err, data) => {
-        return res.status(200).json({ status: "Pending", user_id: users.length });
+    const result = await User.create({
+        firstName: body.first_name,
+        lastName: body.last_name,
+        email: body.email,
+        gender: body.gender,
+        jobTitle: body.job_title
     })
+
+    console.log("Result", result);
+
+    return res.status(201).json({ msg: "Success" });
+
+    // users.push({ ...body, id: users.length + 1 });
+    // fs.writeFile("./MOCK_DATA.json", JSON.stringify(users), (err, data) => {
+    //     return res.status(200).json({ status: "Pending", user_id: users.length });
+    // })
     // console.log("Body", body);
 
 })
